@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>필담 아카이브 (筆談 Archive)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==================== BRIGHT JADE GREEN PALETTE ==================== */
+        :root {
+            --bg-paper: #F4F8F5;          /* 밝고 은은한 연두빛 한지 바탕 */
+            --paper-card: #FFFFFF;        /* 깔끔한 카드 배경 */
+            --jade-dark: #3B6B52;         /* 메인 텍스트 및 딥 옥색 */
+            --jade-main: #589A76;         /* 포인트 메인 연두색 */
+            --jade-light: #A3D2B5;        /* 서브 라인 및 밝은 연두 */
+            --jade-soft: #E8F3ED;         /* 은은한 연두 틴트 배경 */
+            --ink-black: #212D27;         /* 텍스트 컬러 */
+            --border-color: #D3E5DB;      /* 경계선 컬러 */
+            --danger-red: #E55353;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Gowun Batang', 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-paper);
+            background-image: radial-gradient(var(--jade-light) 1.2px, transparent 1.2px);
+            background-size: 24px 24px;
+            color: var(--ink-black);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        /* ==================== HEADER ==================== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            background: rgba(244, 248, 245, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 35px;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(88, 154, 118, 0.08);
+        }
+
+        .header-logo {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--jade-dark);
+            letter-spacing: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo-img {
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            object-fit: contain;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .header-user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.95rem;
+        }
+
+        .point-badge {
+            background-color: var(--jade-soft);
+            color: var(--jade-dark);
+            border: 1px solid var(--jade-light);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        /* ==================== BUTTONS & INPUTS ==================== */
+        .btn-trad {
+            background-color: var(--jade-main);
+            color: #FFFFFF;
+            border: 1px solid var(--jade-main);
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-radius: 6px;
+            box-shadow: 0 3px 8px rgba(88, 154, 118, 0.2);
+            margin: 4px;
+        }
+
+        .btn-trad:hover {
+            background-color: var(--jade-dark);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--jade-dark);
+            border: 1px solid var(--jade-main);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--jade-soft);
+        }
+
+        .btn-danger {
+            background-color: transparent;
+            color: var(--danger-red);
+            border: 1px solid var(--danger-red);
+            padding: 3px 8px;
+            font-size: 0.78rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .btn-danger:hover {
+            background-color: #FDE8E8;
+        }
+
+        input[type="text"], input[type="password"], select, textarea {
+            width: 100%;
+            max-width: 440px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border: 1px solid var(--border-color);
+            background-color: var(--paper-card);
+            color: var(--ink-black);
+            font-size: 0.95rem;
+            border-radius: 6px;
+            outline: none;
+            text-align: center;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--jade-main);
+        }
+
+        textarea {
+            height: 110px;
+            resize: vertical;
+            text-align: left;
+        }
+
+        /* ==================== CARDS & PAGES ==================== */
+        .page {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            background: var(--paper-card);
+            border: 1px solid var(--border-color);
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(88, 154, 118, 0.06);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .card::after {
+            content: "葉";
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 0.9rem;
+            color: var(--jade-light);
+            border: 1px solid var(--jade-light);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .section-title {
+            font-size: 1.65rem;
+            margin-bottom: 12px;
+            color: var(--jade-dark);
+            border-bottom: 2px solid var(--jade-soft);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        /* ==================== MODALS & LIGHTBOX ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(33, 45, 39, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-box {
+            background: var(--paper-card);
+            border: 2px solid var(--jade-main);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 380px;
+            width: 85%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .transition-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(244, 248, 245, 0.95);
+            backdrop-filter: blur(5px);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .spinner {
+            width: 42px;
+            height: 42px;
+            border: 4px solid var(--jade-soft);
+            border-top: 4px solid var(--jade-main);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fullscreen-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 4000;
+            cursor: zoom-out;
+        }
+
+        .fullscreen-modal img {
+            max-width: 92%;
+            max-height: 92%;
+            object-fit: contain;
+            border-radius: 6px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+
+        /* ==================== CIRCULAR MENU ==================== */
+        .circular-menu-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+            height: 500px;
+            margin: 25px auto 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle-bg-line {
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            border: 2px dashed var(--jade-light);
+            border-radius: 50%;
+            z-index: 1;
+            opacity: 0.7;
+        }
+
+        .center-archive-logo {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            background: #FFFFFF;
+            border: 3px solid var(--jade-main);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 6px 18px rgba(88, 154, 118, 0.15);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .center-archive-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .logo-upload-placeholder {
+            font-size: 0.8rem;
+            color: var(--jade-dark);
+            padding: 12px;
+            line-height: 1.4;
+            word-break: keep-all;
+        }
+
+        .circle-item {
+            position: absolute;
+            width: 135px;
+            height: 85px;
+            background: var(--paper-card);
+            border: 1.5px solid var(--jade-light);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            padding: 8px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .circle-item:hover {
+            border-color: var(--jade-main);
+            background-color: var(--jade-soft);
+        }
+
+        .circle-item .icon { font-size: 1.3rem; margin-bottom: 4px; }
+        .circle-item .label { font-size: 0.85rem; font-weight: bold; color: var(--ink-black); line-height: 1.2; }
+
+        .item-1 { top: 15px; left: 207px; }
+        .item-2 { top: 135px; left: 375px; }
+        .item-3 { top: 330px; left: 310px; }
+        .item-4 { top: 330px; left: 105px; }
+        .item-5 { top: 135px; left: 40px; }
+
+        @media (max-width: 600px) {
+            .circular-menu-wrapper { height: auto; flex-direction: column; gap: 12px; }
+            .circle-bg-line { display: none; }
+            .center-archive-logo { position: relative; margin-bottom: 20px; }
+            .circle-item { position: relative !important; top: auto !important; left: auto !important; width: 100%; max-width: 300px; height: 60px; flex-direction: row; gap: 12px; }
+            .circle-item .icon { margin-bottom: 0; }
+        }
+
+        /* ==================== 3D CAROUSEL ==================== */
+        .carousel-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            height: 270px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .carousel-card {
+            position: absolute;
+            width: 190px;
+            height: 230px;
+            background: var(--paper-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+        .carousel-card.center { transform: translateZ(100px); z-index: 10; border: 2px solid var(--jade-main); background: var(--jade-soft); }
+        .carousel-card.left { transform: translateX(-150px) scale(0.8) rotateY(25deg); opacity: 0.6; z-index: 5; }
+        .carousel-card.right { transform: translateX(150px) scale(0.8) rotateY(-25deg); opacity: 0.6; z-index: 5; }
+        .item-icon { font-size: 3.2rem; margin-bottom: 10px; }
+
+        /* ==================== FEEDS & MAGAZINE ==================== */
+        .feed-list { margin-top: 25px; text-align: left; }
+        .feed-item { background: #FFF; border: 1px solid var(--border-color); padding: 18px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .feed-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #666; margin-bottom: 10px; border-bottom: 1px dashed var(--border-color); padding-bottom: 6px; }
+        
+        .feed-uploaded-img-wrap { margin: 12px 0; background: var(--bg-paper); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; text-align: center; }
+        .feed-uploaded-img { max-width: 100%; max-height: 380px; border-radius: 6px; object-fit: contain; display: block; margin: 0 auto; }
+        
+        .upload-preview-box { display: none; margin: 10px auto; max-width: 280px; padding: 8px; background: var(--jade-soft); border: 1px dashed var(--jade-main); border-radius: 8px; }
+        .upload-preview-box img { max-width: 100%; max-height: 180px; border-radius: 4px; display: block; margin: 0 auto; }
+
+        .like-btn { background: none; border: none; color: var(--danger-red); cursor: pointer; font-size: 0.9rem; }
+        .comment-section { margin-top: 12px; background: var(--bg-paper); padding: 12px; border-radius: 6px; font-size: 0.85rem; }
+        .comment-input-box { display: flex; gap: 6px; margin-top: 8px; }
+        .comment-input-box input { flex: 1; margin: 0; text-align: left; }
+
+        .magazine-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; text-align: left; }
+        .mag-card { background: var(--paper-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; }
+        .mag-img-ph { width: 100%; height: 140px; background: var(--jade-soft); display: flex; align-items: center; justify-content: center; border-radius: 6px; margin-bottom: 12px; font-size: 2.5rem; color: var(--jade-dark); }
+
+        .mag-original-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
+        @media (max-width: 650px) { .mag-original-grid { grid-template-columns: 1fr; } }
+
+        .mag-original-card { background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .mag-original-img-box { width: 100%; min-height: 260px; background: var(--bg-paper); border: 1px dashed var(--jade-light); border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; margin-bottom: 12px; cursor: pointer; position: relative; }
+        .mag-original-img-box img { width: 100%; height: auto; max-height: 520px; object-fit: contain; display: block; }
+        .warning-text { color: var(--danger-red); font-size: 0.85rem; margin-top: 6px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    <header>
+        <div class="header-logo" onclick="goHomeIfLoggedIn()">
+            <img id="headerLogoImg" class="header-logo-img" src="" alt="로고">
+            <span>필담 아카이브</span>
+        </div>
+        <div class="header-user-info" id="headerUserInfo">
+            <span>로그인이 필요합니다</span>
+        </div>
+    </header>
+
+    <!-- GENERAL MODAL -->
+    <div class="modal-overlay" id="customModal">
+        <div class="modal-box">
+            <p id="modalMsg" style="margin-bottom: 20px; line-height: 1.6;"></p>
+            <button class="btn-trad" onclick="closeModal()">확인</button>
+        </div>
+    </div>
+
+    <!-- TRANSITION OVERLAY -->
+    <div class="transition-overlay" id="transitionOverlay">
+        <div class="spinner"></div>
+        <p id="transMsg" style="font-size: 1.05rem; font-weight: bold; color: var(--jade-dark);">'필담 아카이브'로 이동 중...</p>
+    </div>
+
+    <!-- 라이트박스 모달 -->
+    <div class="fullscreen-modal" id="fullscreenModal" onclick="closeFullscreenImage()">
+        <img id="fullscreenImg" src="" alt="전체화면 원본 이미지">
+    </div>
+
+    <div class="container">
+
+        <!-- 1. LOGIN / REGISTER PAGE -->
+        <div id="page-login" class="page active">
+            <div class="card">
+                <h2 class="section-title">필담 아카이브 입장</h2>
+                <p style="margin-bottom: 25px; color: #666;">한국 전통 감성의 문학 참여 공간</p>
+
+                <div id="loginForm">
+                    <input type="text" id="loginId" placeholder="아이디"><br>
+                    <input type="password" id="loginPw" placeholder="비밀번호"><br><br>
+                    <button class="btn-trad" onclick="handleLogin()">로그인</button>
+                    <button class="btn-trad btn-secondary" onclick="toggleAuthMode('register')">회원가입으로</button>
+                </div>
+
+                <div id="registerForm" style="display: none;">
+                    <input type="text" id="regId" placeholder="아이디 (한글/영문/숫자 6자 이상)"><br>
+                    <input type="password" id="regPw" placeholder="비밀번호"><br><br>
+                    <button class="btn-trad" onclick="handleRegister()">가입 완료 (500P 증정)</button>
+                    <button class="btn-trad btn-secondary" onclick="toggleAuthMode('login')">로그인으로</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. PSYCHOLOGY TEST PAGE (10개 질문) -->
+        <div id="page-test" class="page">
+            <div class="card">
+                <h2 class="section-title">문학적 취향 심리 테스트</h2>
+                <p style="margin-bottom: 20px; color:#555;">음양오행(목·화·토·금·수) 기반 문학 성향 진단 (총 10문항)</p>
+
+                <div id="testContainer"></div>
+
+                <div id="testResult" style="display: none;">
+                    <h3 style="color: var(--jade-dark); font-size: 1.4rem; margin-bottom: 15px;" id="resultTypeName"></h3>
+                    <p id="resultTypeDesc" style="margin-bottom: 25px; line-height: 1.6;"></p>
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 20px;">
+                        <p style="margin-bottom: 18px; font-weight: bold;">당신의 성향에 맞는 문학 추천 페이지로 이동하시겠습니까?</p>
+                        <button class="btn-trad" onclick="goToKitPage()">예 (맞춤 키트 보기)</button>
+                        <button class="btn-trad btn-secondary" onclick="triggerAutoTransition()">아니오 (아카이브 메인으로)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TODAY'S HUMANITIES CAPACITY TEST PAGE (오늘의 인문학 역량 테스트하기) -->
+        <div id="page-humanities" class="page">
+            <div class="card">
+                <div id="humStartScreen">
+                    <h1 style="font-size: 2.2rem; color: var(--jade-dark); margin-bottom: 20px;">오늘의 인문학 역량 테스트하기</h1>
+                    <p style="font-size: 1.15rem; color: #555; margin-bottom: 30px;">시작하시겠습니까?</p>
+                    <button class="btn-trad" style="padding: 14px 40px; font-size: 1.1rem;" onclick="startHumanitiesQuiz()">예</button>
+                    <button class="btn-trad btn-secondary" onclick="triggerAutoTransition()">돌아가기</button>
+                </div>
+
+                <div id="humQuizScreen" style="display: none; text-align: left;">
+                    <div style="margin-bottom: 15px; font-weight: bold; color: var(--jade-dark);" id="humQuizProgress">문항 1/5</div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 15px; word-break: keep-all;" id="humQuizQuestion"></h3>
+                    <div id="humQuizOptions"></div>
+                    <div id="humQuizSubjective" style="display: none; margin-top: 15px;">
+                        <input type="text" id="humSubjectiveInput" placeholder="답안을 입력하세요" style="text-align: left; max-width: 100%;">
+                        <br>
+                        <button class="btn-trad" id="humSubBtn" style="margin-top: 10px;" onclick="submitSubjectiveAnswer()">다음 문항</button>
+                    </div>
+                </div>
+
+                <div id="humResultScreen" style="display: none;">
+                    <h2 style="font-size: 1.8rem; color: var(--jade-dark); margin-bottom: 15px;">테스트 결과</h2>
+                    <div style="font-size: 3rem; font-weight: bold; color: var(--jade-main); margin-bottom: 10px;" id="humScoreDisplay">100점</div>
+                    <h3 style="font-size: 1.4rem; color: #333; margin-bottom: 20px;" id="humBadgeDisplay">칭호: 문장의 지배자</h3>
+                    <p id="humResultDesc" style="margin-bottom: 30px; line-height: 1.6; color: #555;"></p>
+                    <button class="btn-trad" onclick="triggerAutoTransition()">메인으로 이동</button>
+                    <button class="btn-trad btn-secondary" onclick="resetHumanitiesQuiz()">다시 테스트하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. KIT RECOMMEND & PURCHASE PAGE -->
+        <div id="page-kit" class="page">
+            <div class="card">
+                <h2 class="section-title">나만의 문학 키트 추천</h2>
+                <p style="color: #666; margin-bottom: 10px;">당신의 성향에 딱 맞는 키트를 확인해보세요</p>
+
+                <div class="carousel-container" id="kitCarousel"></div>
+
+                <h3 id="selectedKitTitle" style="margin-top: 10px;">-</h3>
+                <p id="selectedKitPrice" style="color: var(--jade-dark); font-weight: bold; margin-bottom: 15px;">-</p>
+                <button class="btn-trad" onclick="showKitOrderForm()">구매하기</button>
+
+                <div id="kitOrderForm" style="display: none; margin-top: 20px; border-top: 1px dashed var(--border-color); padding-top: 20px;">
+                    <h4>배송 정보 입력</h4>
+                    <input type="text" id="kitOrderName" placeholder="받으실 분 성함"><br>
+                    <input type="text" id="kitOrderAddr" placeholder="배송지 주소"><br><br>
+                    <button class="btn-trad" onclick="completeKitOrder()">주문 완료</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ARCHIVE MAIN PAGE -->
+        <div id="page-main" class="page">
+            <div class="card" style="padding-bottom: 40px;">
+                <h1 style="font-size: 1.8rem; color: var(--jade-dark); margin-bottom: 5px;">필담 아카이브</h1>
+                <p style="color: #666; font-size: 0.95rem; margin-bottom: 15px;">원하시는 문학 참여 영역을 선택해보세요</p>
+
+                <button class="btn-trad" style="margin-bottom: 15px; background-color: var(--jade-dark);" onclick="showPage('page-humanities')">
+                    🎓 오늘의 인문학 역량 테스트하기
+                </button>
+
+                <input type="file" id="logoFileInput" accept="image/*" style="display:none;" onchange="handleOriginalAssetUpload('logo', this)">
+
+                <div class="circular-menu-wrapper">
+                    <div class="circle-bg-line"></div>
+                    
+                    <div class="center-archive-logo" onclick="document.getElementById('logoFileInput').click()" title="클릭하여 원본 로고 사진 등록/변경">
+                        <img id="mainCenterLogoImg" src="" alt="필담 회사 로고" style="display:none;">
+                        <div id="mainCenterLogoPlaceholder" class="logo-upload-placeholder">
+                            📷 클릭하여<br><b>원본 로고 사진</b><br>넣기
+                        </div>
+                    </div>
+
+                    <div class="circle-item item-1" onclick="navigateTo('community')">
+                        <span class="icon">✍️</span>
+                        <span class="label">1. 필사 커뮤니티</span>
+                    </div>
+                    <div class="circle-item item-2" onclick="navigateTo('ending')">
+                        <span class="icon">📖</span>
+                        <span class="label">2. 내가 직접<br>만드는 결말</span>
+                    </div>
+                    <div class="circle-item item-3" onclick="navigateTo('sensory')">
+                        <span class="icon">🌿</span>
+                        <span class="label">3. 감각 카드<br>만들기</span>
+                    </div>
+                    <div class="circle-item item-4" onclick="navigateTo('shop')">
+                        <span class="icon">🎁</span>
+                        <span class="label">4. 굿즈 구매하기</span>
+                    </div>
+                    <div class="circle-item item-5" onclick="navigateTo('magazine')">
+                        <span class="icon">📰</span>
+                        <span class="label">5. 이번달 매거진<br>미리보기</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. FEATURE 1: TRANSCRIBE COMMUNITY -->
+        <div id="page-community" class="page">
+            <div class="card">
+                <h2 class="section-title">필사 커뮤니티</h2>
+                <p style="margin-bottom: 15px;">오늘의 필사를 남기고 감상을 나누어보세요.</p>
+                
+                <div style="margin-bottom: 15px;">
+                    <input type="file" id="transcribeImg" accept="image/*" style="display:none;" onchange="updateFileName()">
+                    <button class="btn-trad btn-secondary" onclick="document.getElementById('transcribeImg').click()">🖼️ 필사 이미지 선택</button>
+                    <span id="fileNameDisplay" style="display:block; font-size:0.85rem; color:#666; margin-top:5px;">선택된 파일 없음</span>
+                    <div id="uploadPreviewBox" class="upload-preview-box">
+                        <img id="uploadPreviewImg" src="" alt="업로드 미리보기">
+                    </div>
+                    <p class="warning-text">⚠️ 허위 인증 시 포인트가 회수될 수 있습니다.</p>
+                </div>
+
+                <textarea id="transcribeText" placeholder="이 문장이 마음에 남은 이유를 적어주세요..."></textarea><br>
+                <button class="btn-trad" onclick="submitTranscribe()">인증 완료 (+300P)</button>
+
+                <div class="feed-list" id="communityFeed"></div>
+                
+                <br><button class="btn-trad btn-secondary" onclick="triggerAutoTransition()">아카이브 메인으로 돌아가기</button>
+            </div>
+        </div>
+
+        <!-- 6. FEATURE 2: MAKE MY OWN ENDING -->
+        <div id="page-ending" class="page">
+            <div class="card">
+                <h2 class="section-title">내가 직접 만드는 결말</h2>
+                <p style="margin-bottom: 15px;">소설을 선택하고 자신만의 결말을 완성해주세요.</p>
+
+                <select id="novelSelect" style="max-width: 100%;">
+                    <option value="">-- 소설을 선택하세요 --</option>
+                    <option value="1">1. [목소리] 비 내리는 밤, 빈 방에서 들려온 익숙한 전화벨 소리...</option>
+                    <option value="2">2. [달빛 시계] 할아버지의 오래된 쾌종시계가 12시 대신 13번 울렸다...</option>
+                    <option value="3">3. [구름 서점] 골목 끝 희미한 등불 아래, 한 번도 본 적 없는 서점이 생겼다...</option>
+                    <option value="4">4. [붉은 실] 손가락 끝에 묶인 투명한 실을 따라 걷다 만난 낯선 사람...</option>
+                    <option value="5">5. [바람의 기억] 잊고 지낸 옛 고향 집 툇마루에서 우연히 발견한 비밀 상자...</option>
+                    <option value="6">6. [찻잔의 노래] 찻잔 속 찻잎이 소용돌이치며 그려낸 미래의 한 장면...</option>
+                    <option value="7">7. [지우개] 과거의 기억 한 단락을 지울 수 있는 지우개를 선물 받았다...</option>
+                    <option value="8">8. [마지막 편지] 100년 전 보내진 우표 없는 편지가 나에게 도착했다...</option>
+                </select><br><br>
+
+                <textarea id="endingText" placeholder="최소 30자 이상, 자신만의 결말을 적어주세요. (같은 문자 5번 이상 연속 반복 금지)"></textarea><br>
+                <button class="btn-trad" onclick="submitEnding()">작성 완료 (+300P)</button>
+
+                <div class="feed-list" id="endingFeed"></div>
+
+                <br><button class="btn-trad btn-secondary" onclick="triggerAutoTransition()">아카이브 메인으로 돌아가기</button>
+            </div>
+        </div>
+
+        <!-- 7. FEATURE 3: SENSORY CARD -->
+        <div id="page-sensory" class="page">
+            <div class="card">
+                <h2 class="section-title">감각 카드 만들기</h2>
+                <p style="margin-bottom: 15px;">문학 작품 속에 담긴 오감의 감각을 기록합니다.</p>
+
+                <input type="text" id="sensoryTitle" placeholder="문학 작품명 및 장면/문장 (필수)"><br>
+                <input type="text" id="sensoryScent" placeholder="향 (필수 입력)"><br>
+                <input type="text" id="sensoryTouch" placeholder="촉감 (선택)"><br>
+                <input type="text" id="sensorySound" placeholder="소리 (선택)"><br>
+                <textarea id="sensoryStory" placeholder="소설에 얽힌 자신의 이야기 (선택)"></textarea><br>
+                <button class="btn-trad" onclick="submitSensory()">감각 카드 생성 (+200P)</button>
+
+                <div class="feed-list" id="sensoryFeed"></div>
+
+                <br><button class="btn-trad btn-secondary" onclick="triggerAutoTransition()">아카이브 메인으로 돌아가기</button>
+            </div>
+        </div>
+
+        <!-- 8. FEATURE 4: GOODS SHOP -->
+        <div id="page-shop" class="page">
+            <div class="card">
+                <h2 class="section-title">굿즈 구매하기 (포인트 쇼핑몰)</h2>
+                <p style="color: #666; margin-bottom: 10px;">모은 포인트로 필담의 특별한 굿즈를 만나보세요</p>
+
+                <div class="carousel-container" id="goodsCarousel"></div>
+
+                <h3 id="selectedGoodsTitle" style="margin-top: 10px;">-</h3>
+                <p id="selectedGoodsPrice" style="color: var(--jade-dark); font-weight: bold; margin-bottom: 15px;">-</p>
+                <button class="btn-trad" onclick="buyGoods()">포인트로 구매</button>
+
+                <div id="goodsOrderForm" style="display: none; margin-top: 20px; border-top: 1px dashed var(--border-color); padding-top: 20px;">
+                    <h4>수령자 정보 입력</h4>
+                    <input type="text" id="goodsRecipient" placeholder="수령자 성함"><br><br>
+                    <button class="btn-trad" onclick="completeGoodsPurchase()">구매 확정</button>
+                </div>
+
+                <br><br><button class="btn-trad btn-secondary" onclick="triggerAutoTransition()">아카이브 메인으로 돌아가기</button>
+            </div>
+        </div>
+
+        <!-- 9. FEATURE 5: MAGAZINE PREVIEW (설명문 제거 및 사진 수정/등록창 연결) -->
+        <div id="page-magazine" class="page">
+            <div class="card">
+                <h2 class="section-title">이번 달 매거진 미리보기</h2>
+                <p style="margin-bottom: 15px; color: #555;">[필담 매거진 VOL.142 / 2026.10] 요약 및 인포그래픽[cite: 1]</p>
+
+                <div class="magazine-grid">
+                    <div class="mag-card">
+                        <div class="mag-img-ph">🏷️ 1+1</div>
+                        <h3 style="font-size:1.05rem; color:var(--jade-dark);">1. 편의점은 왜 1+1 행사를 할까?</h3>
+                        <p style="font-size:0.85rem; margin-top:8px; line-height:1.5;">
+                            <b>제로 프라이스 효과:</b> 0원의 가치를 파격적으로 느끼는 심리.<br>
+                            <b>손실 회피 성향:</b> 무료 혜택을 놓친다는 생각에 구매 유도.<br>
+                            50% 할인보다 소비자의 구매 수량과 객단가를 높입니다.
+                        </p>
+                    </div>
+
+                    <div class="mag-card">
+                        <div class="mag-img-ph">🛠️ IKEA</div>
+                        <h3 style="font-size:1.05rem; color:var(--jade-dark);">2. 왜 번거로운 것에 돈을 낼까?</h3>
+                        <p style="font-size:0.85rem; margin-top:8px; line-height:1.5;">
+                            <b>이케아 효과(IKEA Effect):</b> 직접 노동과 노력을 들여 완성한 결과물에 더 높은 가치와 애착을 느끼는 인지 편향.<br>
+                            완성 경험이 가치 평가 상승으로 이어집니다.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 22px; background: var(--jade-soft); border-radius: 10px; border: 1px solid var(--jade-light);">
+                    <p style="margin-bottom: 16px; font-weight: bold; color: var(--jade-dark); font-size: 1.1rem;">📖 오프라인 매거진 견본</p>
+
+                    <!-- 이미지 업로드용 숨김 input -->
+                    <input type="file" id="magFileInput-1" accept="image/*" style="display:none;" onchange="handleOriginalAssetUpload('mag1', this)">
+                    <input type="file" id="magFileInput-2" accept="image/*" style="display:none;" onchange="handleOriginalAssetUpload('mag2', this)">
+                    <input type="file" id="magFileInput-3" accept="image/*" style="display:none;" onchange="handleOriginalAssetUpload('mag3', this)">
+                    <input type="file" id="magFileInput-4" accept="image/*" style="display:none;" onchange="handleOriginalAssetUpload('mag4', this)">
+
+                    <div class="mag-original-grid">
+                        <!-- 견본 1 -->
+                        <div class="mag-original-card">
+                            <p style="font-weight:bold; color:var(--jade-dark); margin-bottom:8px; font-size:0.9rem;">견본 1. ECONOMICS 인트로</p>
+                            <div class="mag-original-img-box" onclick="document.getElementById('magFileInput-1').click()" title="클릭하여 이미지 등록/수정">
+                                <img id="magOrigImg-1" src="" alt="매거진 견본 1" style="display:none;">
+                                <span id="magOrigPh-1" style="font-size:0.85rem; color:#666; padding:20px;">📷 클릭하여<br><b>견본 1번 이미지</b> 등록/수정</span>
+                            </div>
+                            <button type="button" class="btn-trad" style="width:100%; padding:9px;" onclick="openMagFullscreen('mag1')">
+                                🔍 원본보기 (전체화면)
+                            </button>
+                        </div>
+
+                        <!-- 견본 2 -->
+                        <div class="mag-original-card">
+                            <p style="font-weight:bold; color:var(--jade-dark); margin-bottom:8px; font-size:0.9rem;">견본 2. 1+1 행사 & 이케아 효과 본문</p>
+                            <div class="mag-original-img-box" onclick="document.getElementById('magFileInput-2').click()" title="클릭하여 이미지 등록/수정">
+                                <img id="magOrigImg-2" src="" alt="매거진 견본 2" style="display:none;">
+                                <span id="magOrigPh-2" style="font-size:0.85rem; color:#666; padding:20px;">📷 클릭하여<br><b>견본 2번 이미지</b> 등록/수정</span>
+                            </div>
+                            <button type="button" class="btn-trad" style="width:100%; padding:9px;" onclick="openMagFullscreen('mag2')">
+                                🔍 원본보기 (전체화면)
+                            </button>
+                        </div>
+
+                        <!-- 견본 3 -->
+                        <div class="mag-original-card">
+                            <p style="font-weight:bold; color:var(--jade-dark); margin-bottom:8px; font-size:0.9rem;">견본 3. PILDAM 전통 창살 & 노리개</p>
+                            <div class="mag-original-img-box" onclick="document.getElementById('magFileInput-3').click()" title="클릭하여 이미지 등록/수정">
+                                <img id="magOrigImg-3" src="" alt="매거진 견본 3" style="display:none;">
+                                <span id="magOrigPh-3" style="font-size:0.85rem; color:#666; padding:20px;">📷 클릭하여<br><b>견본 3번 이미지</b> 등록/수정</span>
+                            </div>
+                            <button type="button" class="btn-trad" style="width:100%; padding:9px;" onclick="openMagFullscreen('mag3')">
+                                🔍 원본보기 (전체화면)
+                            </button>
+                        </div>
+
+                        <!-- 견본 4 -->
+                        <div class="mag-original-card">
+                            <p style="font-weight:bold; color:var(--jade-dark); margin-bottom:8px; font-size:0.9rem;">견본 4. 필담(筆談) 한옥 처마 표지</p>
+                            <div class="mag-original-img-box" onclick="document.getElementById('magFileInput-4').click()" title="클릭하여 이미지 등록/수정">
+                                <img id="magOrigImg-4" src="" alt="매거진 견본 4" style="display:none;">
+                                <span id="magOrigPh-4" style="font-size:0.85rem; color:#666; padding:20px;">📷 클릭하여<br><b>견본 4번 이미지</b> 등록/수정</span>
+                            </div>
+                            <button type="button" class="btn-trad" style="width:100%; padding:9px;" onclick="openMagFullscreen('mag4')">
+                                🔍 원본보기 (전체화면)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <br><button class="btn-trad btn-secondary" onclick="triggerAutoTransition()">아카이브 메인으로 돌아가기</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let currentUser = null;
+        let usersDB = JSON.parse(localStorage.getItem('pildam_usersDB')) || {};
+        let sharedData = JSON.parse(localStorage.getItem('pildam_sharedData')) || {
+            transcribeFeed: [],
+            endingFeed: [],
+            sensoryFeed: []
+        };
+
+        let siteAssets = JSON.parse(localStorage.getItem('pildam_siteAssets')) || {
+            logo: "", mag1: "", mag2: "", mag3: "", mag4: ""
+        };
+
+        let pendingTranscribeImgData = null;
+
+        const kitData = [
+            { id: 'wood', name: '나무(木) - 숲의 문학 키트', desc: '성장과 생명력이 담긴 시집과 목재 펜 트레이', icon: '🌲', price: '15,000원' },
+            { id: 'fire', name: '불(火) - 열정의 문학 키트', desc: '강렬한 단편 소설집과 향초 캔들', icon: '🔥', price: '15,000원' },
+            { id: 'earth', name: '흙(土) - 포용의 문학 키트', desc: '따뜻한 수필집과 흙 냄새 인센스 스틱', icon: '⛰️', price: '15,000원' },
+            { id: 'metal', name: '금(金) - 절제의 문학 키트', desc: '날카로운 철학 서적과 금속 책갈피', icon: '🗡️', price: '15,000원' },
+            { id: 'water', name: '수(水) - 지혜의 문학 키트', desc: '잔잔한 고전 문학집과 만년필 잉크', icon: '🌊', price: '15,000원' }
+        ];
+        let kitCarouselIdx = 0;
+        let userMatchedType = 'wood';
+
+        const goodsData = [
+            { id: 'keyring', name: '필담 캐릭터 굿즈 키링', price: 5000, icon: '🗝️' },
+            { id: 'nfc', name: '문장 NFC 키링', price: 20000, icon: '🏷️' },
+            { id: 'magazine', name: '매거진 무료 구매권', price: 100000, icon: '📚' }
+        ];
+        let goodsCarouselIdx = 0;
+
+        /* 심리 테스트 질문 (10개) */
+        const testQuestions = [
+            { 
+                q: "1. 서점에 들어섰을 때 가장 먼저 발길이 향하는 코너는?", 
+                a: [
+                    {t:'wood', text:"🌱 싱그러운 자연과 성장의 희망을 담은 시집 코너"},
+                    {t:'fire', text:"🔥 심장이 뜨거워지는 강렬한 서스펜스/단편 소설"},
+                    {t:'earth', text:"⛰️ 따뜻한 위로와 일상의 휴식을 주는 에세이/수필"},
+                    {t:'metal', text:"🗡️ 치밀한 논리와 인문 철학 서적이 있는 서가"},
+                    {t:'water', text:"🌊 잔잔하고 깊은 통찰을 주는 고전 문학 영역"}
+                ] 
+            },
+            { 
+                q: "2. 글을 쓸 때 나에게 가장 큰 영감을 주는 분위기는?", 
+                a: [
+                    {t:'wood', text:"🌱 푸른 숲속 새소리와 파릇한 나무 냄새"},
+                    {t:'fire', text:"🔥 붉은 노을빛과 활기차고 열정적인 도시의 소음"},
+                    {t:'earth', text:"⛰️ 고즈넉한 한옥 툇마루와 따스한 흙내음"},
+                    {t:'metal', text:"🗡️ 차갑고 정돈된 새벽 공기와 깔끔한 책상"},
+                    {t:'water', text:"🌊 비 오는 날 창가를 두드리는 잔잔한 빗소리"}
+                ] 
+            },
+            { 
+                q: "3. 내 마음에 오랫동안 남아 울림을 주는 문장의 스타일은?", 
+                a: [
+                    {t:'wood', text:"🌱 피어나는 꽃처럼 유려하고 생명력 넘치는 문장"},
+                    {t:'fire', text:"🔥 휘몰아치듯 감정을 단숨에 사로잡는 폭발적인 문장"},
+                    {t:'earth', text:"⛰️ 묵직하고 담담하게 가슴 깊이 안아주는 문장"},
+                    {t:'metal', text:"🗡️ 군더더기 없이 단호하고 명확하여 날카로운 문장"},
+                    {t:'water', text:"🌊 끝없이 깊은 호수처럼 많은 여운을 남기는 문장"}
+                ] 
+            },
+            { 
+                q: "4. 내가 주인공이 되어 이야기를 이끌어간다면 맡고 싶은 역할은?", 
+                a: [
+                    {t:'wood', text:"🌱 미지의 세계를 향해 멈추지 않고 성장하는 개척자"},
+                    {t:'fire', text:"🔥 불꽃같은 신념으로 세상을 바꾸려는 열정적인 혁명가"},
+                    {t:'earth', text:"⛰️ 상처받은 인물들을 품어주고 조화를 이루는 중재자"},
+                    {t:'metal', text:"🗡️ 냉철한 이성과 정의감으로 원칙을 지키는 기사"},
+                    {t:'water', text:"🌊 세상의 모든 비밀과 진리를 품고 있는 조용한 현자"}
+                ] 
+            },
+            { 
+                q: "5. 필담 아카이브에서 완성하고 싶은 나만의 기록은?", 
+                a: [
+                    {t:'wood', text:"🌱 날마다 새롭게 돋아나는 나의 희망과 아이디어"},
+                    {t:'fire', text:"🔥 가슴 속 담아두었던 강렬하고 뜨거운 창작의 결말"},
+                    {t:'earth', text:"⛰️ 소중한 사람들과 공유하고 싶은 소소하고 정겨운 이야기"},
+                    {t:'metal', text:"🗡️ 한 자 한 자 정교하고 흐트러짐 없이 다듬은 필사"},
+                    {t:'water', text:"🌊 나만의 오감 감각과 사유를 깊게 녹여낸 감각 카드"}
+                ] 
+            },
+            {
+                q: "6. 고요한 밤, 홀로 독서에 몰입할 때 곁에 두고 싶은 음료는?",
+                a: [
+                    {t:'wood', text:"🌱 산뜻하고 상큼한 싱그러운 청귤 차"},
+                    {t:'fire', text:"🔥 진하고 강렬한 향이 느껴지는 에스프레소"},
+                    {t:'earth', text:"⛰️ 구수하고 마음을 가라앉혀주는 곡물차"},
+                    {t:'metal', text:"🗡️ 차갑고 명료하게 각성시키는 얼음물"},
+                    {t:'water', text:"🌊 은은하게 퍼지는 정갈한 우롱차"}
+                ]
+            },
+            {
+                q: "7. 여행지에서 뜻밖에 발견한 고서적 상점, 당신이 가장 먼저 집어들 책은?",
+                a: [
+                    {t:'wood', text:"🌱 미지의 섬을 탐험하는 어린 시절의 동화집"},
+                    {t:'fire', text:"🔥 역사 속 드라마틱한 운명을 다룬 서사시"},
+                    {t:'earth', text:"⛰️ 이웃 사람들의 솔직한 일기가 담긴 수필집"},
+                    {t:'metal', text:"🗡️ 정교한 암호와 기호로 적힌 논리 노트"},
+                    {t:'water', text:"🌊 세월의 흔적이 묻어나는 옛시인들의 친필 시집"}
+                ]
+            },
+            {
+                q: "8. 문학 작품 속 갈등 장면을 마주했을 때 당신의 마음가짐은?",
+                a: [
+                    {t:'wood', text:"🌱 갈등을 이겨내고 희망찬 변화를 이뤄내길 기대한다"},
+                    {t:'fire', text:"🔥 주인공의 뜨거운 입장에 완벽히 몰입하여 분노하고 열광한다"},
+                    {t:'earth', text:"⛰️ 각자의 사정을 따뜻한 시선으로 이해하려 노력한다"},
+                    {t:'metal', text:"🗡️ 사건의 인과관계와 논리적 허점을 객관적으로 분석한다"},
+                    {t:'water', text:"🌊 인생의 거대한 순리와 비극 뒤의 여운을 가만히 삼킨다"}
+                ]
+            },
+            {
+                q: "9. 소중한 사람에게 한 줄의 글귀를 적어 선물하려 할 때 떠오르는 표현은?",
+                a: [
+                    {t:'wood', text:"🌱 당신의 앞날에 늘 푸른 희망의 싹이 피어나길"},
+                    {t:'fire', text:"🔥 우리의 순간이 태양보다 뜨겁게 타오르기를"},
+                    {t:'earth', text:"⛰️ 변함없는 뿌리처럼 언제나 곁에서 힘이 되어줄게"},
+                    {t:'metal', text:"🗡️ 흔들림 없는 곧은 마음으로 당신의 길을 응원합니다"},
+                    {t:'water', text:"🌊 바다처럼 깊고 투명한 당신의 가치를 기억하며"}
+                ]
+            },
+            {
+                q: "10. 문학이란 당신에게 어떤 의미에 가장 가까운가요?",
+                a: [
+                    {t:'wood', text:"🌱 나를 매일 새롭게 꿈꾸게 만드는 자양분"},
+                    {t:'fire', text:"🔥 가슴 속에 숨어있는 열정에 불을 지피는 도선"},
+                    {t:'earth', text:"⛰️ 지친 일상을 다정하게 품어주는 쉼터"},
+                    {t:'metal', text:"🗡️ 세상을 명확하고 날카롭게 바라보게 하는 잣대"},
+                    {t:'water', text:"🌊 내면 깊은 곳을 조용히 비춰주는 거울"}
+                ]
+            }
+        ];
+        let testAnswers = [];
+        let currentQIdx = 0;
+
+        /* 객관식 문제 데이터 풀 */
+        const humQuotePool = [
+            { quote: "오늘 어머니가 세상을 떠났다.", answer: "알베르 카뮈 - 《이방인》", options: ["알베르 카뮈 - 《이방인》", "가와바타 야스나리 - 《설국》", "레프 톨스토이 - 《안나 카레니나》", "조지 오웰 - 《1984》"] },
+            { quote: "국경의 긴 터널을 빠져나오자, 눈의 고장이었다.", answer: "가와바타 야스나리 - 《설국》", options: ["블라디미르 나보코프 - 《롤리타》", "가와바타 야스나리 - 《설국》", "헤르만 헤세 - 《데미안》", "알베르 카뮈 - 《이방인》"] },
+            { quote: "행복한 가정은 모두 고만고만하지만, 불행한 가정은 저마다의 이유로 불행하다.", answer: "레프 톨스토이 - 《안나 카레니나》", options: ["조지 오웰 - 《1984》", "레프 톨스토이 - 《안나 카레니나》", "블라디미르 나보코프 - 《롤리타》", "가와바타 야스나리 - 《설국》"] },
+            { quote: "화창하지만 쌀쌀한 4월의 어느 날이었고, 시계들은 13시를 가리키고 있었다.", answer: "조지 오웰 - 《1984》", options: ["헤르만 헤세 - 《데미안》", "알베르 카뮈 - 《이방인》", "조지 오웰 - 《1984》", "레프 톨스토이 - 《안나 카레니나》"] },
+            { quote: "새는 알에서 나오려고 싸운다. 알은 세상이다. 태어나려는 자는 한 세계를 파괴해야 한다.", answer: "헤르만 헤세 - 《데미안》", options: ["헤르만 헤세 - 《데미안》", "조지 오웰 - 《1984》", "가와바타 야스나리 - 《설국》", "블라디미르 나보코프 - 《롤리타》"] },
+            { quote: "롤리타, 내 삶의 빛, 내 몸의 불꽃.", answer: "블라디미르 나보코프 - 《롤리타》", options: ["알베르 카뮈 - 《이방인》", "블라디미르 나보코프 - 《롤리타》", "레프 톨스토이 - 《안나 카레니나》", "헤르만 헤세 - 《데미안》"] }
+        ];
+
+        /* 고정 주관식 문제 (4번: 주관식 1, 5번: 주관식 2) */
+        const humFixedSub1 = {
+            q: "[어휘력 테스트 1] 사물의 본질이나 현상을 깊이 있게 꿰뚫어 보는 능력을 뜻하며, '인문학적 (   )을/를 넓히다'처럼 쓰이는 단어는?<br><br><span style='color:var(--jade-dark); font-size:0.9rem;'>💡 힌트: ~~력 (ㅌㅊㄹ)</span>",
+            answers: ["통찰력", "통찰"]
+        };
+
+        const humFixedSub2 = {
+            q: "[어휘력 테스트 2] 시나 소설에서 대상이나 상황을 실제로 보는 것처럼 생생하고 묘사적으로 표현하는 기법을 뜻하는 말은?<br><br><span style='color:var(--jade-dark); font-size:0.9rem;'>💡 힌트: ~~화 (ㅎㅅㅎ)</span>",
+            answers: ["형상화"]
+        };
+
+        let currentHumQuiz = [];
+        let currentHumIdx = 0;
+        let humScore = 0;
+
+        window.onload = function() {
+            syncSharedDataFromStorage();
+            renderHeader();
+            renderOriginalAssets();
+
+            if (typeof google !== 'undefined' && google.script) {
+                google.script.run.withSuccessHandler(function(driveImgs) {
+                    if (!driveImgs) return;
+                    let updated = false;
+                    ['logo', 'mag1', 'mag2', 'mag3', 'mag4'].forEach(key => {
+                        if (driveImgs[key]) {
+                            siteAssets[key] = driveImgs[key];
+                            updated = true;
+                        }
+                    });
+                    if (updated) {
+                        try {
+                            localStorage.setItem('pildam_siteAssets', JSON.stringify(siteAssets));
+                        } catch (e) {}
+                        renderOriginalAssets();
+                    }
+                }).getDriveOriginalImages();
+            }
+        };
+
+        function syncSharedDataFromStorage() {
+            const savedUsers = localStorage.getItem('pildam_usersDB');
+            const savedShared = localStorage.getItem('pildam_sharedData');
+            const savedAssets = localStorage.getItem('pildam_siteAssets');
+            if (savedUsers) usersDB = JSON.parse(savedUsers);
+            if (savedShared) sharedData = JSON.parse(savedShared);
+            if (savedAssets) siteAssets = JSON.parse(savedAssets);
+        }
+
+        function openMagFullscreen(assetKey) {
+            const dataUrl = siteAssets[assetKey];
+            if (!dataUrl) {
+                const keyNum = assetKey.replace('mag', '');
+                const inputEl = document.getElementById('magFileInput-' + keyNum);
+                if (inputEl) inputEl.click();
+                return;
+            }
+            const modal = document.getElementById('fullscreenModal');
+            const img = document.getElementById('fullscreenImg');
+            img.src = dataUrl;
+            modal.style.display = 'flex';
+        }
+
+        function closeFullscreenImage() {
+            document.getElementById('fullscreenModal').style.display = 'none';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeFullscreenImage();
+        });
+
+        function renderOriginalAssets() {
+            const mainLogoImg = document.getElementById('mainCenterLogoImg');
+            const mainLogoPh = document.getElementById('mainCenterLogoPlaceholder');
+            const headerLogoImg = document.getElementById('headerLogoImg');
+
+            if (siteAssets.logo) {
+                mainLogoImg.src = siteAssets.logo;
+                mainLogoImg.style.display = 'block';
+                mainLogoPh.style.display = 'none';
+                headerLogoImg.src = siteAssets.logo;
+                headerLogoImg.style.display = 'inline-block';
+            } else {
+                mainLogoImg.style.display = 'none';
+                mainLogoPh.style.display = 'block';
+                headerLogoImg.style.display = 'none';
+            }
+
+            for (let i = 1; i <= 4; i++) {
+                const key = 'mag' + i;
+                const imgEl = document.getElementById('magOrigImg-' + i);
+                const phEl = document.getElementById('magOrigPh-' + i);
+                if (siteAssets[key]) {
+                    imgEl.src = siteAssets[key];
+                    imgEl.style.display = 'block';
+                    phEl.style.display = 'none';
+                } else {
+                    imgEl.style.display = 'none';
+                    phEl.style.display = 'block';
+                }
+            }
+        }
+
+        function readOriginalImageFile(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const maxDim = 1400;
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round(h * (maxDim / w));
+                            w = maxDim;
+                        } else {
+                            w = Math.round(w * (maxDim / h));
+                            h = maxDim;
+                        }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    callback(canvas.toDataURL('image/jpeg', 0.92));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleOriginalAssetUpload(assetKey, inputEl) {
+            const file = inputEl.files[0];
+            if (!file) return;
+
+            readOriginalImageFile(file, function(dataUrl) {
+                siteAssets[assetKey] = dataUrl;
+                try {
+                    localStorage.setItem('pildam_siteAssets', JSON.stringify(siteAssets));
+                } catch (err) {
+                    showModal("저장 공간이 부족합니다.");
+                }
+                renderOriginalAssets();
+                showModal("✅ 원본 사진이 등록/수정되었습니다!");
+            });
+        }
+
+        function showModal(msg) {
+            document.getElementById('modalMsg').innerText = msg;
+            document.getElementById('customModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').style.display = 'none';
+        }
+
+        function triggerAutoTransition() {
+            const overlay = document.getElementById('transitionOverlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                showPage('page-main');
+            }, 1200);
+        }
+
+        function saveDB() {
+            try {
+                if (currentUser) {
+                    usersDB[currentUser.id] = currentUser;
+                }
+                localStorage.setItem('pildam_usersDB', JSON.stringify(usersDB));
+                localStorage.setItem('pildam_sharedData', JSON.stringify(sharedData));
+            } catch (err) {
+                showModal("저장 공간이 부족합니다.");
+            }
+        }
+
+        function renderHeader() {
+            const header = document.getElementById('headerUserInfo');
+            if (currentUser) {
+                header.innerHTML = `
+                    <span>안녕하세요 <b>${currentUser.id}</b>님</span>
+                    <span class="point-badge">${currentUser.points.toLocaleString()}P</span>
+                    <button class="btn-trad btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="handleLogout()">로그아웃</button>
+                `;
+            } else {
+                header.innerHTML = `<span>로그인이 필요합니다</span>`;
+            }
+        }
+
+        function addPoints(amount) {
+            const today = new Date().toISOString().slice(0, 10);
+            if (currentUser.lastEarnedDate !== today) {
+                currentUser.lastEarnedDate = today;
+                currentUser.dailyEarnedPoints = 0;
+            }
+
+            if (currentUser.dailyEarnedPoints + amount > 3000) {
+                const addable = 3000 - currentUser.dailyEarnedPoints;
+                if (addable <= 0) {
+                    showModal("⚠️ 하루 포인트 수령 제한(3,000P)에 도달하였습니다.");
+                    return false;
+                }
+                currentUser.points += addable;
+                currentUser.dailyEarnedPoints += addable;
+                saveDB();
+                renderHeader();
+                showModal(`🎉 일일 제한으로 인해 ${addable}P만 추가로 획득하셨습니다!`);
+                return true;
+            }
+
+            currentUser.points += amount;
+            currentUser.dailyEarnedPoints += amount;
+            saveDB();
+            renderHeader();
+            return true;
+        }
+
+        function goHomeIfLoggedIn() {
+            if (currentUser) {
+                triggerAutoTransition();
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        /* AUTHENTICATION */
+        function toggleAuthMode(mode) {
+            if(mode === 'register') {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('registerForm').style.display = 'block';
+            } else {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
+            }
+        }
+
+        function handleRegister() {
+            const id = document.getElementById('regId').value.trim();
+            const pw = document.getElementById('regPw').value.trim();
+
+            const isValidId = /^[가-힣a-zA-Z0-9]{6,}$/.test(id);
+            if (!isValidId) {
+                showModal("아이디는 한글, 영어, 숫자 조합 6자 이상이어야 합니다.");
+                return;
+            }
+            if (!pw) {
+                showModal("비밀번호를 입력해주세요.");
+                return;
+            }
+            if (usersDB[id]) {
+                showModal("이미 존재하는 아이디입니다.");
+                return;
+            }
+
+            usersDB[id] = {
+                id: id,
+                pw: pw,
+                points: 500,
+                dailyEarnedPoints: 0,
+                lastEarnedDate: '',
+                hasCompletedTest: false
+            };
+            localStorage.setItem('pildam_usersDB', JSON.stringify(usersDB));
+            showModal("가입이 완료되었습니다. 로그인해주세요.");
+            toggleAuthMode('login');
+        }
+
+        function handleLogin() {
+            syncSharedDataFromStorage();
+            const id = document.getElementById('loginId').value.trim();
+            const pw = document.getElementById('loginPw').value.trim();
+
+            if (id === '테스트용01' && pw === 'Fullsun1106!') {
+                if (!usersDB[id]) {
+                    usersDB[id] = {
+                        id: id,
+                        pw: pw,
+                        points: 10000,
+                        dailyEarnedPoints: 0,
+                        lastEarnedDate: '',
+                        hasCompletedTest: true,
+                        isTestAccount: true
+                    };
+                } else {
+                    usersDB[id].points = 10000;
+                    usersDB[id].isTestAccount = true;
+                }
+                currentUser = usersDB[id];
+                saveDB();
+                renderHeader();
+                triggerAutoTransition();
+                return;
+            }
+
+            if (usersDB[id] && usersDB[id].pw === pw) {
+                currentUser = usersDB[id];
+                renderHeader();
+
+                if (!currentUser.hasCompletedTest) {
+                    currentUser.hasCompletedTest = true;
+                    saveDB();
+                    startTest();
+                } else {
+                    triggerAutoTransition();
+                }
+            } else {
+                showModal("아이디 또는 비밀번호가 올바르지 않습니다.");
+            }
+        }
+
+        function handleLogout() {
+            saveDB();
+            currentUser = null;
+            renderHeader();
+            showPage('page-login');
+            showModal("로그아웃 되었습니다.");
+        }
+
+        /* PSYCHOLOGY TEST */
+        function startTest() {
+            currentQIdx = 0;
+            testAnswers = [];
+            showPage('page-test');
+            document.getElementById('testContainer').style.display = 'block';
+            document.getElementById('testResult').style.display = 'none';
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = testQuestions[currentQIdx];
+            let html = `<h3 style="margin-bottom:20px; color:var(--jade-dark); font-size:1.15rem;">${q.q}</h3>`;
+            q.a.forEach((ans) => {
+                html += `<button class="btn-trad btn-secondary" style="width:100%; max-width:480px; margin:7px 0; text-align:left; padding:12px 18px;" onclick="selectAnswer('${ans.t}')">${ans.text}</button><br>`;
+            });
+            document.getElementById('testContainer').innerHTML = html;
+        }
+
+        function selectAnswer(type) {
+            testAnswers.push(type);
+            currentQIdx++;
+            if (currentQIdx < testQuestions.length) {
+                renderQuestion();
+            } else {
+                finishTest();
+            }
+        }
+
+        function finishTest() {
+            const counts = {};
+            testAnswers.forEach(t => counts[t] = (counts[t] || 0) + 1);
+            let maxType = 'wood';
+            let maxCount = 0;
+            for (let t in counts) {
+                if (counts[t] > maxCount) {
+                    maxCount = counts[t];
+                    maxType = t;
+                }
+            }
+
+            userMatchedType = maxType;
+
+            const typeInfo = {
+                wood: {
+                    title: "생명력과 희망의 나무",
+                    desc: "희망과 성장의 에너지를 지닌 당신은 새로운 생명력과 아이디어가 피어나는 유려한 문장에서 큰 영감을 얻습니다."
+                },
+                fire: {
+                    title: "열정과 불꽃의 에너지를 지닌 불",
+                    desc: "뜨거운 열정과 감성을 지닌 당신은 휘몰아치는 전개와 가슴을 뛰게 만드는 강렬한 서사에 깊이 몰입합니다."
+                },
+                earth: {
+                    title: "따뜻함과 포용의 흙",
+                    desc: "따뜻한 포용력을 지닌 당신은 지친 일상을 다정하게 감싸주고 삶의 온기를 더해주는 담담한 글에서 위로를 얻습니다."
+                },
+                metal: {
+                    title: "냉철함과 절제의 금",
+                    desc: "냉철한 이성과 통찰력을 지닌 당신은 군더더기 없이 정교하고 논리적인 문장과 깊이 있는 사유를 즐깁니다."
+                },
+                water: {
+                    title: "지혜와 깊은 사유의 수",
+                    desc: "깊고 잔잔한 지혜를 지닌 당신은 은은하게 퍼지는 여운과 내면을 비추는 고전적인 사유의 글에 끌립니다."
+                }
+            };
+
+            const result = typeInfo[maxType] || typeInfo.wood;
+
+            document.getElementById('testContainer').style.display = 'none';
+            document.getElementById('testResult').style.display = 'block';
+            document.getElementById('resultTypeName').innerText = `당신은 [${result.title}] 유형입니다!`;
+            document.getElementById('resultTypeDesc').innerText = result.desc;
+        }
+
+        function goToKitPage() {
+            const targetIdx = kitData.findIndex(k => k.id === userMatchedType);
+            kitCarouselIdx = targetIdx !== -1 ? targetIdx : 0;
+            
+            showPage('page-kit');
+            renderKitCarousel();
+        }
+
+        /* 오늘의 인문학 역량 테스트 기능 */
+        function resetHumanitiesQuiz() {
+            document.getElementById('humStartScreen').style.display = 'block';
+            document.getElementById('humQuizScreen').style.display = 'none';
+            document.getElementById('humResultScreen').style.display = 'none';
+        }
+
+        function startHumanitiesQuiz() {
+            const shuffledObj = [...humQuotePool].sort(() => 0.5 - Math.random()).slice(0, 3);
+
+            currentHumQuiz = [
+                ...shuffledObj.map(q => ({ type: 'obj', ...q })),
+                { type: 'sub', ...humFixedSub1 },
+                { type: 'sub', ...humFixedSub2 }
+            ];
+
+            currentHumIdx = 0;
+            humScore = 0;
+
+            document.getElementById('humStartScreen').style.display = 'none';
+            document.getElementById('humQuizScreen').style.display = 'block';
+            document.getElementById('humResultScreen').style.display = 'none';
+
+            renderHumQuestion();
+        }
+
+        function renderHumQuestion() {
+            const item = currentHumQuiz[currentHumIdx];
+            document.getElementById('humQuizProgress').innerText = `문항 ${currentHumIdx + 1}/5`;
+
+            const qBox = document.getElementById('humQuizQuestion');
+            const optBox = document.getElementById('humQuizOptions');
+            const subBox = document.getElementById('humQuizSubjective');
+            const subBtn = document.getElementById('humSubBtn');
+
+            optBox.innerHTML = '';
+            document.getElementById('humSubjectiveInput').value = '';
+
+            if (currentHumIdx === 4) {
+                subBtn.innerText = "결과 확인하기";
+            } else {
+                subBtn.innerText = "다음 문항";
+            }
+
+            if (item.type === 'obj') {
+                subBox.style.display = 'none';
+                optBox.style.display = 'block';
+
+                qBox.innerHTML = `<b>[객관식]</b> 다음 제시된 문학 작품 구절의 출처를 고르세요.<br><br><blockquote style="background:var(--jade-soft); padding:12px; border-left:4px solid var(--jade-main); font-style:italic;">"${item.quote}"</blockquote>`;
+
+                item.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-trad btn-secondary';
+                    btn.style.width = '100%';
+                    btn.style.margin = '6px 0';
+                    btn.style.textAlign = 'left';
+                    btn.innerText = opt;
+                    btn.onclick = () => selectObjAnswer(opt, item.answer);
+                    optBox.appendChild(btn);
+                });
+            } else {
+                optBox.style.display = 'none';
+                subBox.style.display = 'block';
+
+                qBox.innerHTML = `<b>[주관식]</b> ${item.q}`;
+            }
+        }
+
+        function selectObjAnswer(selected, correct) {
+            if (selected === correct) {
+                humScore += 20;
+            }
+            nextHumQuestion();
+        }
+
+        function submitSubjectiveAnswer() {
+            const userAns = document.getElementById('humSubjectiveInput').value.trim();
+            const item = currentHumQuiz[currentHumIdx];
+
+            if (!userAns) {
+                showModal("답안을 입력해 주세요.");
+                return;
+            }
+
+            if (item.answers.some(a => userAns.includes(a))) {
+                humScore += 20;
+            }
+            nextHumQuestion();
+        }
+
+        function nextHumQuestion() {
+            currentHumIdx++;
+            if (currentHumIdx < currentHumQuiz.length) {
+                renderHumQuestion();
+            } else {
+                finishHumQuiz();
+            }
+        }
+
+        function finishHumQuiz() {
+            document.getElementById('humQuizScreen').style.display = 'none';
+            document.getElementById('humResultScreen').style.display = 'block';
+
+            document.getElementById('humScoreDisplay').innerText = `${humScore}점`;
+
+            let badge = '';
+            let desc = '';
+
+            if (humScore === 100) {
+                badge = '별칭: ✨ 문장의 지배자 (인문학 마스터)';
+                desc = '완벽한 문학적 직관과 높은 어휘력을 지니고 계십니다! 인문학의 정점에 선 마스터이십니다.';
+            } else if (humScore >= 80) {
+                badge = '별칭: 📜 깊은 사유의 탐색자';
+                desc = '문학 작품과 어휘에 대한 식견이 매우 뛰어납니다. 뛰어난 문학적 감각을 지니셨습니다.';
+            } else if (humScore >= 60) {
+                badge = '별칭: 📖 애서가의 눈자위';
+                desc = '문학에 대한 애정과 기본 소양이 탄탄합니다. 조금만 더 탐구하면 마스터에 도달할 수 있습니다.';
+            } else {
+                badge = '별칭: 🍃 문학 산책자';
+                desc = '인문학의 세계를 차분히 거닐며 탐색하는 단계입니다. 필담 아카이브와 함께 풍부한 경험을 쌓아보세요!';
+            }
+
+            document.getElementById('humBadgeDisplay').innerText = badge;
+            document.getElementById('humResultDesc').innerText = desc;
+        }
+
+        function renderKitCarousel() {
+            const container = document.getElementById('kitCarousel');
+            container.innerHTML = '';
+
+            const total = kitData.length;
+            const centerIdx = kitCarouselIdx;
+            const leftIdx = (kitCarouselIdx - 1 + total) % total;
+            const rightIdx = (kitCarouselIdx + 1) % total;
+
+            kitData.forEach((item, idx) => {
+                let posClass = '';
+                if (idx === centerIdx) posClass = 'center';
+                else if (idx === leftIdx) posClass = 'left';
+                else if (idx === rightIdx) posClass = 'right';
+                else return;
+
+                const card = document.createElement('div');
+                card.className = `carousel-card ${posClass}`;
+                card.onclick = () => {
+                    kitCarouselIdx = idx;
+                    renderKitCarousel();
+                };
+                card.innerHTML = `
+                    <div class="item-icon">${item.icon}</div>
+                    <h4 style="font-size:0.95rem; text-align:center;">${item.name}</h4>
+                `;
+                container.appendChild(card);
+            });
+
+            const currentKit = kitData[kitCarouselIdx];
+            document.getElementById('selectedKitTitle').innerText = currentKit.name;
+            document.getElementById('selectedKitPrice').innerText = `${currentKit.desc} | 가격: ${currentKit.price}`;
+        }
+
+        function showKitOrderForm() {
+            document.getElementById('kitOrderForm').style.display = 'block';
+        }
+
+        function completeKitOrder() {
+            const name = document.getElementById('kitOrderName').value.trim();
+            const addr = document.getElementById('kitOrderAddr').value.trim();
+            if(!name || !addr) {
+                showModal("이름과 주소를 모두 입력해주세요.");
+                return;
+            }
+            showModal("✅ 주문이 완료되었습니다.");
+            triggerAutoTransition();
+        }
+
+        /* NAVIGATION & FEEDS */
+        function navigateTo(feature) {
+            syncSharedDataFromStorage();
+            renderOriginalAssets();
+            showPage(`page-${feature}`);
+            if (feature === 'shop') renderGoodsCarousel();
+            if (feature === 'community') renderFeed('communityFeed', sharedData.transcribeFeed);
+            if (feature === 'ending') renderFeed('endingFeed', sharedData.endingFeed);
+            if (feature === 'sensory') renderFeed('sensoryFeed', sharedData.sensoryFeed);
+        }
+
+        /* TRANSCRIBE */
+        function updateFileName() {
+            const fileInput = document.getElementById('transcribeImg');
+            const file = fileInput.files[0];
+            const previewBox = document.getElementById('uploadPreviewBox');
+            const previewImg = document.getElementById('uploadPreviewImg');
+
+            if (!file) {
+                document.getElementById('fileNameDisplay').innerText = "선택된 파일 없음";
+                previewBox.style.display = 'none';
+                pendingTranscribeImgData = null;
+                return;
+            }
+
+            document.getElementById('fileNameDisplay').innerText = `선택됨: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 700;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height = Math.round(height * (maxDim / width));
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width = Math.round(width * (maxDim / height));
+                            height = maxDim;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    pendingTranscribeImgData = canvas.toDataURL('image/jpeg', 0.82);
+                    previewImg.src = pendingTranscribeImgData;
+                    previewBox.style.display = 'block';
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function submitTranscribe() {
+            const text = document.getElementById('transcribeText').value.trim();
+            const fileInput = document.getElementById('transcribeImg');
+            const file = fileInput.files[0];
+
+            if (!file || !pendingTranscribeImgData) {
+                showModal("필사 인증 이미지를 업로드해주세요.");
+                return;
+            }
+            if (!text) {
+                showModal("마음에 남은 이유를 입력해주세요.");
+                return;
+            }
+
+            if (addPoints(300)) {
+                const newPost = {
+                    id: Date.now(),
+                    author: currentUser.id,
+                    content: text,
+                    imgName: file.name,
+                    imgData: pendingTranscribeImgData,
+                    likes: [],
+                    comments: []
+                };
+                sharedData.transcribeFeed.unshift(newPost);
+                saveDB();
+                renderFeed('communityFeed', sharedData.transcribeFeed);
+
+                document.getElementById('transcribeText').value = '';
+                fileInput.value = '';
+                pendingTranscribeImgData = null;
+                document.getElementById('fileNameDisplay').innerText = "선택된 파일 없음";
+                document.getElementById('uploadPreviewBox').style.display = 'none';
+
+                showModal("인증이 완료되었습니다! (+300P 지급)");
+            }
+        }
+
+        /* ENDING */
+        function submitEnding() {
+            const novelId = document.getElementById('novelSelect').value;
+            const endingText = document.getElementById('endingText').value.trim();
+
+            if (!novelId) {
+                showModal("소설을 선택해주세요.");
+                return;
+            }
+            if (endingText.length < 30) {
+                showModal("결말은 최소 30자 이상 작성해야 합니다.");
+                return;
+            }
+            if (/(.)\1{4,}/.test(endingText)) {
+                showModal("다시 작성해주세요. (같은 문자 5번 이상 연속 반복 금지)");
+                return;
+            }
+
+            if (addPoints(300)) {
+                const novelTitle = document.getElementById('novelSelect').options[novelId].text;
+                const newPost = {
+                    id: Date.now(),
+                    author: currentUser.id,
+                    title: novelTitle,
+                    content: endingText,
+                    likes: [],
+                    comments: []
+                };
+                sharedData.endingFeed.unshift(newPost);
+                saveDB();
+                renderFeed('endingFeed', sharedData.endingFeed);
+                document.getElementById('endingText').value = '';
+                showModal("나만의 결말이 저장되었습니다! (+300P 지급)");
+            }
+        }
+
+        /* SENSORY CARD */
+        function submitSensory() {
+            const title = document.getElementById('sensoryTitle').value.trim();
+            const scent = document.getElementById('sensoryScent').value.trim();
+            const touch = document.getElementById('sensoryTouch').value.trim();
+            const sound = document.getElementById('sensorySound').value.trim();
+            const story = document.getElementById('sensoryStory').value.trim();
+
+            if (!title || !scent) {
+                showModal("작품명/문장 과 향(필수) 항목을 입력해주세요.");
+                return;
+            }
+
+            if (addPoints(200)) {
+                const newPost = {
+                    id: Date.now(),
+                    author: currentUser.id,
+                    title: title,
+                    scent: scent,
+                    touch: touch,
+                    sound: sound,
+                    story: story,
+                    likes: [],
+                    comments: []
+                };
+                sharedData.sensoryFeed.unshift(newPost);
+                saveDB();
+                renderFeed('sensoryFeed', sharedData.sensoryFeed);
+                
+                document.getElementById('sensoryTitle').value = '';
+                document.getElementById('sensoryScent').value = '';
+                document.getElementById('sensoryTouch').value = '';
+                document.getElementById('sensorySound').value = '';
+                document.getElementById('sensoryStory').value = '';
+                showModal("감각 카드가 공유되었습니다! (+200P 지급)");
+            }
+        }
+
+        /* DELETE POST FUNCTIONALITY */
+        function deletePost(feedType, postId) {
+            if (!currentUser) return;
+            let feedKey = feedType === 'communityFeed' ? 'transcribeFeed' : (feedType === 'endingFeed' ? 'endingFeed' : 'sensoryFeed');
+            
+            if (confirm("정말 이 게시물을 삭제하시겠습니까?")) {
+                sharedData[feedKey] = sharedData[feedKey].filter(p => p.id !== postId);
+                saveDB();
+                renderFeed(feedType, sharedData[feedKey]);
+                showModal("게시물이 삭제되었습니다.");
+            }
+        }
+
+        /* COMMON FEED RENDERER */
+        function renderFeed(elementId, feedData) {
+            const container = document.getElementById(elementId);
+            if (!feedData || feedData.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888; padding:20px;">첫 번째 작성자가 되어보세요!</p>';
+                return;
+            }
+
+            let html = '';
+            feedData.forEach(post => {
+                const hasLiked = currentUser && post.likes.includes(currentUser.id);
+                const isAuthor = currentUser && post.author === currentUser.id;
+
+                html += `
+                    <div class="feed-item">
+                        <div class="feed-header">
+                            <span><b>${post.author}</b> 님의 기록 ${isAuthor ? `<button class="btn-danger" onclick="deletePost('${elementId}', ${post.id})">🗑️ 삭제</button>` : ''}</span>
+                            <button class="like-btn" onclick="toggleLike('${elementId}', ${post.id})">
+                                ${hasLiked ? '❤️' : '🤍'} 좋아요 ${post.likes.length}
+                            </button>
+                        </div>
+                        ${post.title ? `<p style="font-weight:bold; color:var(--jade-dark); margin-bottom:5px;">${post.title}</p>` : ''}
+                        ${post.scent ? `<p style="font-size:0.85rem; color:#555;">🌸 향: ${post.scent} ${post.touch ? '| 🖐️ 촉감: '+post.touch : ''} ${post.sound ? '| 🔔 소리: '+post.sound : ''}</p>` : ''}
+                        
+                        ${post.imgData ? `
+                            <div class="feed-uploaded-img-wrap">
+                                <img src="${post.imgData}" alt="필사 인증 이미지" class="feed-uploaded-img">
+                                ${post.imgName ? `<span style="display:block; font-size:0.78rem; color:#777; margin-top:6px;">🖼️ ${post.imgName}</span>` : ''}
+                            </div>
+                        ` : (post.imgName ? `<p style="font-size:0.8rem; color:#888;">🖼️ 첨부 이미지: ${post.imgName}</p>` : '')}
+
+                        <p style="margin:8px 0; line-height:1.5;">${post.content || post.story || ''}</p>
+                        
+                        <div class="comment-section">
+                            <div id="comments-${post.id}">
+                                ${post.comments.map(c => `<p><b>${c.author}:</b> ${c.text}</p>`).join('')}
+                            </div>
+                            <div class="comment-input-box">
+                                <input type="text" id="input-com-${post.id}" placeholder="댓글을 입력하세요...">
+                                <button class="btn-trad" style="padding:4px 10px; font-size:0.8rem;" onclick="addComment('${elementId}', ${post.id})">등록</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleLike(feedType, postId) {
+            if (!currentUser) return;
+            let feedKey = feedType === 'communityFeed' ? 'transcribeFeed' : (feedType === 'endingFeed' ? 'endingFeed' : 'sensoryFeed');
+            let feed = sharedData[feedKey];
+            let post = feed.find(p => p.id === postId);
+            if (!post) return;
+
+            const idx = post.likes.indexOf(currentUser.id);
+            if (idx === -1) {
+                post.likes.push(currentUser.id);
+            } else {
+                showModal("좋아요는 한 게시물당 한 번만 누를 수 있습니다.");
+                return;
+            }
+            saveDB();
+            renderFeed(feedType, feed);
+        }
+
+        function addComment(feedType, postId) {
+            if (!currentUser) return;
+            let feedKey = feedType === 'communityFeed' ? 'transcribeFeed' : (feedType === 'endingFeed' ? 'endingFeed' : 'sensoryFeed');
+            let feed = sharedData[feedKey];
+            let post = feed.find(p => p.id === postId);
+            const input = document.getElementById(`input-com-${postId}`);
+            const text = input.value.trim();
+
+            if (!text) return;
+            post.comments.push({ author: currentUser.id, text: text });
+            saveDB();
+            renderFeed(feedType, feed);
+        }
+
+        /* GOODS SHOP */
+        function renderGoodsCarousel() {
+            const container = document.getElementById('goodsCarousel');
+            container.innerHTML = '';
+
+            const total = goodsData.length;
+            const centerIdx = goodsCarouselIdx;
+            const leftIdx = (goodsCarouselIdx - 1 + total) % total;
+            const rightIdx = (goodsCarouselIdx + 1) % total;
+
+            goodsData.forEach((item, idx) => {
+                let posClass = '';
+                if (idx === centerIdx) posClass = 'center';
+                else if (idx === leftIdx) posClass = 'left';
+                else if (idx === rightIdx) posClass = 'right';
+                else return;
+
+                const card = document.createElement('div');
+                card.className = `carousel-card ${posClass}`;
+                card.onclick = () => {
+                    goodsCarouselIdx = idx;
+                    renderGoodsCarousel();
+                };
+                card.innerHTML = `
+                    <div class="item-icon">${item.icon}</div>
+                    <h4 style="font-size:0.95rem; text-align:center;">${item.name}</h4>
+                `;
+                container.appendChild(card);
+            });
+
+            const currentItem = goodsData[goodsCarouselIdx];
+            document.getElementById('selectedGoodsTitle').innerText = currentItem.name;
+            document.getElementById('selectedGoodsPrice').innerText = `필요 포인트: ${currentItem.price.toLocaleString()}P`;
+        }
+
+        function buyGoods() {
+            const item = goodsData[goodsCarouselIdx];
+            if (!currentUser.isTestAccount && currentUser.points < item.price) {
+                showModal("포인트가 부족합니다. 아카이브 활동으로 포인트를 모아보세요!");
+                return;
+            }
+            document.getElementById('goodsOrderForm').style.display = 'block';
+        }
+
+        function completeGoodsPurchase() {
+            const recipient = document.getElementById('goodsRecipient').value.trim();
+            if (!recipient) {
+                showModal("수령자 성함을 입력해주세요.");
+                return;
+            }
+
+            const item = goodsData[goodsCarouselIdx];
+
+            if (currentUser.isTestAccount) {
+                showModal("🎁 [테스트 계정 혜택] 포인트 차감 없이 구매가 완료되었습니다!");
+            } else {
+                currentUser.points -= item.price;
+                showModal("부스에서 수령하세요! 🎉");
+            }
+
+            saveDB();
+            renderHeader();
+            document.getElementById('goodsOrderForm').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
